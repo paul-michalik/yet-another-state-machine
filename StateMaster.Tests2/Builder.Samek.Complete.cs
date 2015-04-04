@@ -292,7 +292,7 @@ namespace StateMaster.Tests2 {
                 "Samek_Init-ENTER;",
                 "Samek_Init-EXIT;",
                 "Transition:Samek_Init->S2;",
-                "States-ENTER;",
+                "S-ENTER;",
                 "S2-ENTER;", 
                 "S2_Init-ENTER;", 
                 "S2_Init-EXIT;", 
@@ -311,7 +311,7 @@ namespace StateMaster.Tests2 {
                 "S211-EXIT;",
                 "S21-EXIT;",
                 "S2-EXIT;",
-                "States-EXIT;"
+                "S-EXIT;"
             }, m_Context.Log);
             m_Context.Log.Clear();
 
