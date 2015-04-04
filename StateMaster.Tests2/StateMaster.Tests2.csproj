@@ -72,6 +72,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Test Data\Player\Boost MSM Player With Orthogonal Regions And Deferred.jpg" />
     <Content Include="Test Data\Player\Boost MSM Player.jpg" />
     <Content Include="Test Data\Player\MSM.Examples.History.cpp" />
     <Content Include="Test Data\Samek\Samek Machine.PNG" />
