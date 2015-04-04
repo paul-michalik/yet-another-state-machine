@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A82A363F-C36D-4FC5-AC30-9EA958DA54A0}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		StateMaster.vsmdi = StateMaster.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMaster", "StateMaster\StateMaster.csproj", "{850C582F-7AF2-4491-8612-BD693DCA26EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMaster.Tests2", "StateMaster.Tests2\StateMaster.Tests2.csproj", "{5566F08C-F05E-4B4E-8DB8-E8D773986AD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yasm", "Yasm\Yasm.csproj", "{056C58E6-DAD7-4693-B21E-FA436045BA00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Yasm", "Yasm", "{AB5C9041-FDD1-4A58-8228-8E287495F010}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D901CEDE-A472-45CE-B7C5-A04A4329763E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Yasm", "Yasm", "{9E832F24-C812-4E4F-ACD4-A88E603DA613}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMaster", "StateMaster", "{37EAF8FB-DDB9-4D70-B2E3-CD5ECFE3BFB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StateMaster", "StateMaster", "{8FB8656A-AB22-4BF5-97F5-7E3A47582424}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = StateMaster.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{850C582F-7AF2-4491-8612-BD693DCA26EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850C582F-7AF2-4491-8612-BD693DCA26EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850C582F-7AF2-4491-8612-BD693DCA26EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850C582F-7AF2-4491-8612-BD693DCA26EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5566F08C-F05E-4B4E-8DB8-E8D773986AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5566F08C-F05E-4B4E-8DB8-E8D773986AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5566F08C-F05E-4B4E-8DB8-E8D773986AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5566F08C-F05E-4B4E-8DB8-E8D773986AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{056C58E6-DAD7-4693-B21E-FA436045BA00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{056C58E6-DAD7-4693-B21E-FA436045BA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{056C58E6-DAD7-4693-B21E-FA436045BA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{056C58E6-DAD7-4693-B21E-FA436045BA00}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{056C58E6-DAD7-4693-B21E-FA436045BA00} = {AB5C9041-FDD1-4A58-8228-8E287495F010}
+		{A82A363F-C36D-4FC5-AC30-9EA958DA54A0} = {D901CEDE-A472-45CE-B7C5-A04A4329763E}
+		{9E832F24-C812-4E4F-ACD4-A88E603DA613} = {D901CEDE-A472-45CE-B7C5-A04A4329763E}
+		{37EAF8FB-DDB9-4D70-B2E3-CD5ECFE3BFB1} = {D901CEDE-A472-45CE-B7C5-A04A4329763E}
+		{5566F08C-F05E-4B4E-8DB8-E8D773986AD9} = {37EAF8FB-DDB9-4D70-B2E3-CD5ECFE3BFB1}
+		{850C582F-7AF2-4491-8612-BD693DCA26EB} = {8FB8656A-AB22-4BF5-97F5-7E3A47582424}
+	EndGlobalSection
+EndGlobal

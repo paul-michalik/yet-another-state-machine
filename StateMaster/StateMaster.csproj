@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{850C582F-7AF2-4491-8612-BD693DCA26EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StateMaster</RootNamespace>
+    <AssemblyName>StateMaster</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbstractStates\Atomic.cs" />
+    <Compile Include="AbstractStates\Composite.cs" />
+    <Compile Include="AbstractStates\Pseudo.cs" />
+    <Compile Include="AbstractStates\Region.cs" />
+    <Compile Include="AbstractStates\State.cs" />
+    <Compile Include="AbstractStates\StateExtensions.cs" />
+    <Compile Include="AbstractStates\StateMachine.cs" />
+    <Compile Include="Builder\Builder.cs" />
+    <Compile Include="Builder\StateBuilder.cs" />
+    <Compile Include="Builder\TransitionBuilder.cs" />
+    <Compile Include="ConcreteStates\Composite.cs" />
+    <Compile Include="ConcreteStates\Region.cs" />
+    <Compile Include="ConcreteStates\Simple.cs" />
+    <Compile Include="ConcreteStates\StateMachine.cs" />
+    <Compile Include="Contracts\Contracts.cs" />
+    <Compile Include="Contracts\Event.cs" />
+    <Compile Include="Core\CompoundTransition.cs" />
+    <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\EventQueue.cs" />
+    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\ICompoundTransition.cs" />
+    <Compile Include="Core\LCASearch.cs" />
+    <Compile Include="Core\Message.cs" />
+    <Compile Include="Core\TransitionTable.cs" />
+    <Compile Include="Core\Transitor.cs" />
+    <Compile Include="InternalStates\Internal.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Transition.cs" />
+    <Compile Include="PseudoStates\History.cs" />
+    <Compile Include="PseudoStates\Pseudo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
