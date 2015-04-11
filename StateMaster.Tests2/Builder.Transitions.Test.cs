@@ -18,9 +18,17 @@ namespace StateMaster.Tests2 {
                 Log = new List<string>();
             }
 
-            public List<String> Log { get; private set; }
-            
-            public Int32 Foo { get; set; }
+            public List<String> Log
+            {
+                get;
+                private set;
+            }
+
+            public Int32 Foo
+            {
+                get;
+                set;
+            }
         }
 
         SamekContext m_Context;
@@ -53,7 +61,7 @@ namespace StateMaster.Tests2 {
         #region Additional test attributes
         // Use TestInitialize to run code before running each test 
         [TestInitialize()]
-        public void SetUp_SUT_Samek() 
+        public void SetUp_SUT_Samek()
         {
             m_Context = new SamekContext();
         }
@@ -61,14 +69,15 @@ namespace StateMaster.Tests2 {
         //
         // Use TestCleanup to run code after each test has run
         [TestCleanup()]
-        public void MyTestCleanup() 
+        public void MyTestCleanup()
         {
             m_Context = null;
         }
-        
+
         #endregion
 
         [TestMethod]
+        [TestProperty("Module", "Builder.Transitions")]
         public void Add_All_Internal_Transitions()
         {
             // Setup:
@@ -170,6 +179,7 @@ namespace StateMaster.Tests2 {
         }
 
         [TestMethod]
+        [TestProperty("Module", "Builder.Transitions")]
         public void Add_Transitions_From_Samek_Init()
         {
             // Setup:
@@ -206,7 +216,7 @@ namespace StateMaster.Tests2 {
             Assert.AreEqual(TransitionKind.Local, tT0.Kind);
             Assert.AreEqual(1, Samek_Init.Buildee.Transitions.Count());
             Assert.AreEqual(
-                (Int32)Core.Constants.InternalEvents.Completion, 
+                (Int32)Core.Constants.InternalEvents.Completion,
                 Samek_Init.Buildee.Transitions.First().Key);
             Assert.AreEqual(tT0, Samek_Init.Buildee.Transitions.First().Value);
             CollectionAssert.AreEquivalent(
@@ -217,6 +227,7 @@ namespace StateMaster.Tests2 {
         }
 
         [TestMethod]
+        [TestProperty("Module", "Builder.Transitions")]
         [ExpectedException(typeof(ArgumentException))]
         public void Add_All_Transitions_From_Initial_States_Conflicting_IDs()
         {
@@ -250,6 +261,7 @@ namespace StateMaster.Tests2 {
         }
 
         [TestMethod]
+        [TestProperty("Module", "Builder.Transitions")]
         public void Add_All_Transitions_From_Initial_States()
         {
             // Setup:

@@ -5,10 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StateMaster.Tests2
-{
-    
-    
+namespace StateMaster.Tests2 {
+
+
     /// <summary>
     ///This is a test class for Builder_Test and is intended
     ///to contain all Builder_Test Unit Tests
@@ -58,17 +57,18 @@ namespace StateMaster.Tests2
         {
             m_Builder = new StateMaster.Builder();
         }
-        
+
         //Use TestCleanup to run code after each test has run
         [TestCleanup()]
         public void Builder_Test_TearDown()
         {
             m_Builder = null;
         }
-        
+
         #endregion
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void Builder_Machine0_Uses_Node_Builders()
         {
             var tM = m_Builder.StateMachine().ID(States.Machine0.Machine);
@@ -85,7 +85,8 @@ namespace StateMaster.Tests2
             Assert.AreEqual(tM, tS1.Buildee.Parent);
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test()
         {
             AbstractStates.StateMachine tM = m_Builder.StateMachine();
@@ -99,7 +100,8 @@ namespace StateMaster.Tests2
             });
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test_Add_Initial()
         {
             AbstractStates.StateMachine tM = m_Builder.StateMachine();
@@ -107,12 +109,13 @@ namespace StateMaster.Tests2
             Assert.AreEqual(Builder.DefaultIDMinValue + 1, tM_initial.ID);
             Assert.AreEqual(tM, tM_initial.Parent);
             Assert.AreEqual(null, tM_initial.Transitions);
-            CollectionAssert.AreEqual(new AbstractStates.State [] {
+            CollectionAssert.AreEqual(new AbstractStates.State[] {
                 tM, tM_initial
             }, tM.ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test_Add_Initial_And_Simple()
         {
             var tM = m_Builder.StateMachine();
@@ -126,12 +129,13 @@ namespace StateMaster.Tests2
             Assert.AreEqual(tM, tS1.Buildee.Parent);
             Assert.AreEqual(null, tS1.Buildee.Transitions);
 
-            CollectionAssert.AreEqual(new AbstractStates.State [] {
+            CollectionAssert.AreEqual(new AbstractStates.State[] {
                 tM.Buildee, tM_initial.Buildee, tS1.Buildee
             }, tM.Buildee.ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test0()
         {
             var tM = m_Builder.StateMachine();
@@ -147,7 +151,7 @@ namespace StateMaster.Tests2
                 tM, S0, S1, S2, S3, S4
             }, tM.Buildee.ToArray());
 
-            CollectionAssert.AreEqual(new [] {
+            CollectionAssert.AreEqual(new[] {
                 Builder.DefaultIDMinValue + 0, 
                 Builder.DefaultIDMinValue + 1, 
                 Builder.DefaultIDMinValue + 2, 
@@ -157,7 +161,8 @@ namespace StateMaster.Tests2
             }, tM.Buildee.Select(_1 => _1.ID).ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test1()
         {
             var tM = m_Builder.StateMachine().ID(-1);
@@ -187,7 +192,8 @@ namespace StateMaster.Tests2
             }, tM.Buildee.Select(_1 => _1.ID).ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Samek()
         {
             var Samek = m_Builder.StateMachine();
@@ -210,7 +216,7 @@ namespace StateMaster.Tests2
                 Samek, Samek_Init, S, S_Init, S1, S1_Init, S11, S2, S2_Init, S21, S21_Init, S211, Samek_Term
             }, Samek.Buildee.ToArray());
 
-            CollectionAssert.AreEqual(new [] {
+            CollectionAssert.AreEqual(new[] {
                 Builder.DefaultIDMinValue + 0, 
                 Builder.DefaultIDMinValue + 1, 
                 Builder.DefaultIDMinValue + 2, 
@@ -228,12 +234,36 @@ namespace StateMaster.Tests2
         }
 
         class TransitionData {
-            public Int32 Trigger { get; set; }
-            public Action<IMessage> Action { get; set; }
-            public Predicate<Event> Guard { get; set; }
-            public Int32 ID { get; set; }
-            public TransitionKind Kind { get; set; }
-            public AbstractStates.State Target { get; set; }
+            public Int32 Trigger
+            {
+                get;
+                set;
+            }
+            public Action<IMessage> Action
+            {
+                get;
+                set;
+            }
+            public Predicate<Event> Guard
+            {
+                get;
+                set;
+            }
+            public Int32 ID
+            {
+                get;
+                set;
+            }
+            public TransitionKind Kind
+            {
+                get;
+                set;
+            }
+            public AbstractStates.State Target
+            {
+                get;
+                set;
+            }
         }
 
         class TransitionComparer : IComparer {
@@ -257,7 +287,8 @@ namespace StateMaster.Tests2
             #endregion
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test_Add_Initial_And_Simple_And_Anonymous_Transition()
         {
             var tM = m_Builder.StateMachine();
@@ -291,18 +322,19 @@ namespace StateMaster.Tests2
                         Kind = TransitionKind.Local, 
                         Target = tS1
                     }
-                }, 
+                },
                 tM_initial.Buildee.Transitions.Select(_1 => new TransitionData {
                     Trigger = _1.Key,
-                    Action = _1.Value.Action, 
-                    Guard = _1.Value.Guard, 
-                    ID = _1.Value.ID, 
-                    Kind = _1.Value.Kind, 
+                    Action = _1.Value.Action,
+                    Guard = _1.Value.Guard,
+                    ID = _1.Value.ID,
+                    Kind = _1.Value.Kind,
                     Target = _1.Value.Target
                 }).ToArray(), new TransitionComparer());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder")]
         public void StateMachine_Test_Add_Initial_S1_S2_With_Event0()
         {
             var tM = m_Builder.StateMachine().ID(0);
@@ -341,7 +373,7 @@ namespace StateMaster.Tests2
                     }
                 },
                 tM_initial.Buildee.Transitions
-                .Select( _1 => new TransitionData {
+                .Select(_1 => new TransitionData {
                     Trigger = _1.Key,
                     Action = _1.Value.Action,
                     Guard = _1.Value.Guard,

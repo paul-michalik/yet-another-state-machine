@@ -96,6 +96,7 @@ namespace StateMaster.Tests2 {
         }
 
         [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_ConstructPathToRoot_Test_If_State_Is_Null()
         {
             State p_State = null; // TODO: OnNewTransition to an appropriate value
@@ -104,7 +105,8 @@ namespace StateMaster.Tests2 {
             Assert.AreEqual(tActual.Count, 0);
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_ConstructPathToRoot_Test_If_State_Is_Root()
         {
             {
@@ -150,7 +152,8 @@ namespace StateMaster.Tests2 {
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_ConstructPathToRoot_Test_For_State_Tree_1()
         {
             var tStates = m_1.ToDictionary(_1 => (States.Machine1)_1.ID);
@@ -194,7 +197,8 @@ namespace StateMaster.Tests2 {
             CollectionAssert.AreEqual(tExpected, tStates[States.Machine1.S10].PathToParent().ToList());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_Execute_Test_For_State_Tree_0()
         {
             Core.LCASearch.Result tResult;
@@ -317,7 +321,8 @@ namespace StateMaster.Tests2 {
             Assert.AreEqual(tTree[States.Machine0.S1], tLCA);
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_Execute_Test_For_State_Tree_1()
         {
             Core.LCASearch.Result tResult;
@@ -374,7 +379,8 @@ namespace StateMaster.Tests2 {
             }, tResult.PathFromLCAToTarget.ToList());
         }
 
-        [TestMethod()]
+        [TestMethod]
+        [TestProperty("Module", "Builder.LCASearch")]
         public void Builder_LCASearch_Execute_Test_For_Samek()
         {
             Core.LCASearch.Result tResult;

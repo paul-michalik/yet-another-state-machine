@@ -13,19 +13,40 @@ namespace StateMaster.Tests2 {
 
         public class SamekContext {
 
-            public AbstractStates.StateMachine Controller { get; set; }
+            public AbstractStates.StateMachine Controller
+            {
+                get;
+                set;
+            }
 
             public SamekContext()
             {
                 Log = new List<string>();
             }
 
-            public List<String> Log { get; private set; }
+            public List<String> Log
+            {
+                get;
+                private set;
+            }
+
+            internal void WriteLog()
+            {
+                this.Log.ForEach(
+                _ => Console.Write(String.Format("{0}{1}", _, Environment.NewLine)));
+            }
+
+            internal void ClearLog()
+            {
+                Console.Write(String.Format("{0}{1}", "----Log cleared----", Environment.NewLine));
+                this.Log.Clear();
+            }
 
             public void OnTransition(AbstractStates.State pSource, AbstractStates.State pTarget)
             {
-                Log.Add(String.Format("Transition:{0}->{1};", 
-                   (States.Samek)pSource.ID, (States.Samek)pTarget.ID));
+                Log.Add(String.Format("Transition:{0}->{1};",
+                   (States.Samek)pSource.ID, 
+                   (States.Samek)pTarget.ID));
             }
 
             public void OnEnter(AbstractStates.State pState)
@@ -45,7 +66,11 @@ namespace StateMaster.Tests2 {
                 Log.Add(String.Format("Event {0}", p_Event.ID));
             }
 
-            public Int32 Foo { get; set; }
+            public Int32 Foo
+            {
+                get;
+                set;
+            }
         }
 
         AbstractStates.StateMachine m_Machine;
@@ -188,7 +213,8 @@ namespace StateMaster.Tests2 {
 
         #endregion
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_State_Tree_Is_As_Expected()
         {
             Assert.AreEqual(13, m_Machine.ToArray().Length);
@@ -233,17 +259,18 @@ namespace StateMaster.Tests2 {
                 var tT = tS[States.Samek.Samek_Init].Transitions
                     .Select(_ => _.Value.Target)
                     .ToArray();
-                CollectionAssert.AreEqual(new AbstractStates.State [] {
+                CollectionAssert.AreEqual(new AbstractStates.State[] {
                     tS[States.Samek.S2]
                 }, tT);
             }
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void LCA_For_Disable_Event_Handling()
         {
             Assert.AreEqual(m_Machine, m_Context.Controller);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
             Assert.AreEqual(false, m_Machine.IsBusy);
             Assert.AreEqual(false, m_Machine.IsEnabled);
             Assert.AreEqual(0, m_Context.Log.Count);
@@ -251,10 +278,10 @@ namespace StateMaster.Tests2 {
             var tAllStates = this.AllStates;
             var tInternalTerminal = m_Machine.Children.FirstOrDefault(_ => _ is InternalStates.Terminal);
             Assert.IsNotNull(tInternalTerminal);
-            
+
             var tLCAResult = Core.LCASearch.Execute(tAllStates[States.Samek.S211], tInternalTerminal);
             Assert.AreEqual(m_Machine, tLCAResult.LCA);
-            CollectionAssert.AreEqual(new AbstractStates.State [] {
+            CollectionAssert.AreEqual(new AbstractStates.State[] {
                 tAllStates[States.Samek.S211],
                 tAllStates[States.Samek.S21],
                 tAllStates[States.Samek.S2],
@@ -268,26 +295,27 @@ namespace StateMaster.Tests2 {
             }, tLCAResult.PathFromLCAToTarget.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Enable_And_Disable_Event_Handling()
-        {   
+        {
             Assert.AreEqual(m_Machine, m_Context.Controller);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
             Assert.AreEqual(false, m_Machine.IsBusy);
             Assert.AreEqual(false, m_Machine.IsEnabled);
             Assert.AreEqual(0, m_Context.Log.Count);
             var tAllStates = this.AllStates;
 
             m_Machine.EnableEventHandling();
-            
+
             Assert.AreEqual(false, m_Machine.IsBusy);
             Assert.AreEqual(true, m_Machine.IsEnabled);
             Assert.AreEqual(1, m_Machine.Configuration.Count);
             Assert.AreEqual(tAllStates[States.Samek.S211], m_Machine.Configuration.FirstOrDefault());
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            
+            m_Context.WriteLog();
+           
+
             CollectionAssert.AreEqual(new String[] {
                 "Samek_Init-ENTER;",
                 "Samek_Init-EXIT;",
@@ -300,12 +328,12 @@ namespace StateMaster.Tests2 {
                 "S21-ENTER;", 
                 "S211-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             m_Machine.DisableEventHandling();
+
+            m_Context.WriteLog();
             
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
 
             CollectionAssert.AreEqual(new String[] {
                 "S211-EXIT;",
@@ -313,27 +341,27 @@ namespace StateMaster.Tests2 {
                 "S2-EXIT;",
                 "S-EXIT;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             Assert.AreEqual(false, m_Machine.IsBusy);
             Assert.AreEqual(false, m_Machine.IsEnabled);
             Assert.AreEqual(0, m_Machine.Configuration.Count);
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Enter_Machine()
         {
             m_Machine.EnableEventHandling();
-        
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+
+            m_Context.WriteLog(); 
 
             Assert.AreEqual(0, m_Context.Foo);
             CollectionAssert.AreEqual(new String[] {
                 "Samek_Init-ENTER;",
                 "Samek_Init-EXIT;",
                 "Transition:Samek_Init->S2;",
-                "States-ENTER;",
+                "S-ENTER;",
                 "S2-ENTER;", 
                 "S2_Init-ENTER;", 
                 "S2_Init-EXIT;", 
@@ -341,28 +369,29 @@ namespace StateMaster.Tests2 {
                 "S21-ENTER;", 
                 "S211-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S211]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_G()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine); 
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             CollectionAssert.AreEqual(new String[] {
                 "S211-EXIT;",
@@ -375,71 +404,73 @@ namespace StateMaster.Tests2 {
                 "Transition:S1_Init->S11;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_I()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
             CollectionAssert.AreEqual(new String[] {
                 "Transition:S1->S1;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_A()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
             CollectionAssert.AreEqual(new String[] {
                 "S11-EXIT;",
                 "S1-EXIT;",
@@ -450,128 +481,129 @@ namespace StateMaster.Tests2 {
                 "Transition:S1_Init->S11;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_D()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-
+            m_Context.WriteLog();
+            
             Assert.AreEqual(1, m_Context.Foo);
 
             CollectionAssert.AreEqual(new String[] {
                 "S11-EXIT;",
                 "S1-EXIT;",
-                "Transition:S1->States;",
+                "Transition:S1->S;",
                 "S_Init-ENTER;",
                 "S_Init-EXIT;",
                 "Transition:S_Init->S11;",
                 "S1-ENTER;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_D2()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             Assert.AreEqual(0, m_Context.Foo);
 
@@ -583,74 +615,75 @@ namespace StateMaster.Tests2 {
                 "Transition:S1_Init->S11;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_C()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             CollectionAssert.AreEqual(new String[] {
                 "S11-EXIT;",
@@ -663,278 +696,281 @@ namespace StateMaster.Tests2 {
                 "S21-ENTER;",
                 "S211-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S211]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_E()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             CollectionAssert.AreEqual(new String[] {
                 "S211-EXIT;",
                 "S21-EXIT;",
                 "S2-EXIT;",
-                "Transition:States->S11;",
+                "Transition:S->S11;",
                 "S1-ENTER;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_E2()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             CollectionAssert.AreEqual(new String[] {
                 "S11-EXIT;",
                 "S1-EXIT;",
-                "Transition:States->S11;",
+                "Transition:S->S11;",
                 "S1-ENTER;",
                 "S11-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S11]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_G2()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
-
-            Assert.AreEqual(0, m_Context.Foo);
-
-            m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
-
-            Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
-
-            Assert.AreEqual(0, m_Context.Foo);
-
-            m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
+            m_Context.WriteLog();
             
+            m_Context.ClearLog();
+
+            Assert.AreEqual(0, m_Context.Foo);
+
+            m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
+
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
+
+            Assert.AreEqual(0, m_Context.Foo);
+
+            m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
+
+            Console.Write("{0}: ", Events.Samek.E);
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             Assert.AreEqual(0, m_Context.Foo);
 
@@ -946,361 +982,364 @@ namespace StateMaster.Tests2 {
                 "S21-ENTER;",
                 "S211-ENTER;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S211]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_I2()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             Assert.AreEqual(1, m_Context.Foo);
 
             CollectionAssert.AreEqual(new String[] {
                 "Transition:S2->S2;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S211]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_I3()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             Assert.AreEqual(0, m_Context.Foo);
 
             CollectionAssert.AreEqual(new String[] {
-                "Transition:States->States;"
+                "Transition:S->S;"
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.S211]
                 }, m_Context.Controller.Configuration.ToArray());
         }
 
-        [TestMethod]
+        [TestMethod()]
+        [TestProperty("Module", "Samek.Complete")]
         public void Samek_Test_Protocol_Fire_TERMINATE()
         {
             m_Context.Controller.EnableEventHandling();
 
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.A));
 
             Console.Write("{0}: ", Events.Samek.A);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.D));
 
             Console.Write("{0}: ", Events.Samek.D);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.C));
 
             Console.Write("{0}: ", Events.Samek.C);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.E));
 
             Console.Write("{0}: ", Events.Samek.E);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.G));
 
             Console.Write("{0}: ", Events.Samek.G);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(1, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.I));
 
             Console.Write("{0}: ", Events.Samek.I);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
-            m_Context.Log.Clear();
+            m_Context.WriteLog();
+            
+            m_Context.ClearLog();
 
             Assert.AreEqual(0, m_Context.Foo);
 
             m_Context.Controller.HandleEvent(StateMaster.Event.Create(Events.Samek.TERMINATE));
 
             Console.Write("{0}: ", Events.Samek.TERMINATE);
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.WriteLog();
+            
 
             CollectionAssert.AreEqual(new String[] {
                 "S211-EXIT;",
                 "S21-EXIT;",
                 "S2-EXIT;",
-                "States-EXIT;",
-                "Transition:States->Samek_Term;",
+                "S-EXIT;",
+                "Transition:S->Samek_Term;",
                 "Samek_Term-ENTER;",
             }, m_Context.Log);
-            m_Context.Log.Clear();
+            m_Context.ClearLog();
 
             CollectionAssert.AreEqual(new AbstractStates.State[] {
                     this.AllStates[States.Samek.Samek_Term]

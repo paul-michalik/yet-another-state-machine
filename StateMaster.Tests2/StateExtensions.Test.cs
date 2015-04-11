@@ -114,6 +114,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod]
+        [TestProperty("Module", "State.CompoundTransitions")]
         public void Junction_Traversal_Forward_Test_Guards_1_9_6_True()
         {
             Machine = Create(new Predicate<Event> [] {
@@ -167,6 +168,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod]
+        [TestProperty("Module", "State.CompoundTransitions")]
         public void Junction_Traversal_Forward_Test_Guards_11_5_7_True()
         {
             Machine = Create(new Predicate<Event>[] {
@@ -315,8 +317,8 @@ namespace StateMaster.Tests2
 
         void WriteLog(bool p_Clear = false)
         {
-            m_Context.Log.ForEach(_ => Console.Write(_));
-            Console.Write(Environment.NewLine);
+            m_Context.Log.ForEach(_ => 
+                Console.Write(String.Format("{0}{1}", _, Environment.NewLine)));
             if (p_Clear)
                 m_Context.Log.Clear();
         }
@@ -442,7 +444,7 @@ namespace StateMaster.Tests2
         /// <summary>
         ///A test for PathToParent
         ///</summary>
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void PathToParent_From_Null_Test()
         {
             State tS = null;
@@ -452,6 +454,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void PathToParent_From_R4_Test()
         {
             var tAllStates = AllStates;
@@ -460,7 +463,7 @@ namespace StateMaster.Tests2
             }, tAllStates[States.R4].PathToParent().Select(_ => (States)_.ID).ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void PathToParent_From_P1_Test()
         {
             var tAllStates = AllStates;
@@ -470,7 +473,7 @@ namespace StateMaster.Tests2
             }, tAllStates[States.P1].PathToParent().Select(_ => (States)_.ID).ToArray());
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void PathToParent_From_S52_Test()
         {
             var tAllStates = AllStates;
@@ -481,6 +484,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void PathToParent_From_S52_To_R3_Test()
         {
             var tAllStates = AllStates;
@@ -495,7 +499,7 @@ namespace StateMaster.Tests2
         /// <summary>
         ///A test for TraverseBreadthFirst
         ///</summary>
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void TraverseBreadthFirst_From_Null_Test()
         {
             AbstractStates.State tS = null;
@@ -505,6 +509,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraverseBreadthFirst_From_Composite_With_No_Children_Test()
         {
             var tB = new Builder();
@@ -517,6 +522,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraverseBredthFirst_From_R4_Test()
         {
             var tAllStates = AllStates;
@@ -532,6 +538,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraverseBreadthFirst_From_I4_Test()
         {
             var tAllStates = AllStates;
@@ -547,6 +554,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraverseBreadthFirst_From_S52_Test()
         {
             var tAllStates = AllStates;
@@ -562,6 +570,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraverseBreadthFirst_From_P1_Test()
         {
             var tAllStates = AllStates;
@@ -587,6 +596,7 @@ namespace StateMaster.Tests2
         ///A test for TraversePostOrder
         ///</summary>
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_Null_Test()
         {
             AbstractStates.State tS = null;
@@ -596,6 +606,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_Composite_With_No_Children_Test()
         {
             var tB = new Builder();
@@ -608,6 +619,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_R4_Test()
         {
             var tAllStates = AllStates;
@@ -623,6 +635,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_I4_Test()
         {
             var tAllStates = AllStates;
@@ -638,6 +651,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_S52_Test()
         {
             var tAllStates = AllStates;
@@ -653,6 +667,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePostOrder_From_P1_Test()
         {
             var tAllStates = AllStates;
@@ -678,6 +693,7 @@ namespace StateMaster.Tests2
         ///A test for TraversePreOrder
         ///</summary>
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_Null_Test()
         {
             AbstractStates.State tS = null;
@@ -687,6 +703,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_Composite_With_No_Children_Test()
         {
             var tB = new Builder();
@@ -699,6 +716,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_R4_Test()
         {
             var tAllStates = AllStates;
@@ -715,6 +733,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_I4_Test()
         {
             var tAllStates = AllStates;
@@ -730,6 +749,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_S52_Test()
         {
             var tAllStates = AllStates;
@@ -745,6 +765,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void TraversePreOrder_From_P1_Test()
         {
             var tAllStates = AllStates;
@@ -770,6 +791,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void CollectEnabledTransitions_If_Active_Is_I()
         {
             var tAllStates = AllStates;
@@ -803,7 +825,7 @@ namespace StateMaster.Tests2
             }, tEnabledTransitionSet.Select(pT => (Transitions)pT.ID).ToList());
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void CollectEnabledTransitions_If_Active_Is_F()
         {
             var tAllStates = AllStates;
@@ -839,7 +861,7 @@ namespace StateMaster.Tests2
             }, tEnabledTransitionSet.Select(pT => (Transitions)pT.ID).ToList());
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void TraverseCompoundForward_StartAt_t1()
         {
             var tAllStates = AllStates;
@@ -862,7 +884,7 @@ namespace StateMaster.Tests2
 
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void TraverseCompoundForward_StartAt_t7()
         {
             var tAllStates = AllStates;
@@ -883,7 +905,7 @@ namespace StateMaster.Tests2
 
         }
 
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void TraverseCompoundForward_StartAt_t11()
         {
             var tAllStates = AllStates;
@@ -904,7 +926,7 @@ namespace StateMaster.Tests2
         }
 
         // [TestCategory("Config1=P1_R1_R2_R3_P2_R4_R5_S13_S22_S42_S52")]
-        [TestMethod()]
+        [TestMethod()][TestProperty("Module", "State.Extensions")]
         public void CollectEnabledTransitions_If_Active_Is_Config1()
         {
             var tAllStates = AllStates;
@@ -962,6 +984,7 @@ namespace StateMaster.Tests2
         }
 
         [TestMethod()]
+        [TestProperty("Module", "State.Extensions")]
         public void EnableEventHandling()
         {
             var tAllStates = AllStates;
