@@ -79,11 +79,16 @@
     <Content Include="Test Data\Player\MSM.Examples.History.cpp" />
     <Content Include="Test Data\Samek\Samek Machine.PNG" />
     <Content Include="Test Data\Samek\Samek Test Protocol.PNG" />
+    <Content Include="Test Data\StateExtensions\StateExtensions.Machine.png" />
+    <Content Include="Test Data\StateExtensions\StateExtensions.Machine.Transitions.png" />
     <Content Include="Test Data\Traffic Lights\State Machine Toolkit Traffic Lights Build.PNG" />
     <Content Include="Test Data\Traffic Lights\State Machine Toolkit Traffic Lights Text.PNG" />
     <Content Include="Test Data\Traffic Lights\State Machine Toolkit Traffic Lights.PNG" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <None Include="Test Data\StateExtensions\StateExtensions.Machine.pptx" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
