@@ -11,7 +11,11 @@ namespace StateMaster.Tests2
 {
     /// <summary>
     ///This is a test class for StateExtensions_Test and is intended
-    ///to contain all StateExtensions_Test Unit Tests
+    ///to contain all StateExtensions_Test Unit Tests. Corresponds to
+    ///machine from following documents:
+    ///Test Data.StateExtensions.Machine and
+    ///Test Data.StateExtensions.Machine.Transitions. The title isn't well chosen:
+    ///It was intended to test the logic regarding the parallel states!
     ///</summary>
     [TestClass()]
     public class StateExtensions_Test {
@@ -118,9 +122,14 @@ namespace StateMaster.Tests2
                 tTmpS1.Exit += () => p_Context.OnExit(tTmpS1);
                 if (tTmpS1.Transitions != null) {
                     tTmpS1.Transitions
-                        .Select(_ => _.Value)
+                        .Select(p_Pair => p_Pair.Value)
                         .ToList()
-                        .ForEach(_1 => _1.Action += (_2) => p_Context.OnTransition(tTmpS1, _1.Target));
+                        // If I wanted to dump the transition ID, I'll have to 
+                        // refactor all the examples ...:-(
+                        .ForEach(p_transition => p_transition.Action += (p_msg) => {
+                            // p_transition.ID identifies the transition here
+                            p_Context.OnTransition(tTmpS1, p_transition.Target);
+                        });
                 }
             }
             p_Context.Controller.UnhandledEvent += m_Context.OnUnhandledEvent;
