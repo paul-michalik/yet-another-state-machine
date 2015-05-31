@@ -70,7 +70,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StateMaster\StateMaster.csproj">
       <Project>{850C582F-7AF2-4491-8612-BD693DCA26EB}</Project>
-      <Name>StateMaster %28StateMaster\StateMaster%29</Name>
+      <Name>StateMaster</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
